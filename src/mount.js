@@ -1,5 +1,5 @@
 /**
- * 向外暴露mount接口
+ * 向外暴露mount方法接口
  */
 
 const instantiateComponent = require('./instantiateComponent')
