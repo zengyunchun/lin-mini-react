@@ -30,7 +30,7 @@ class Info extends Lin.Component{
         return(
             <div>
                 <h3>点击了: {this.state.num} 次</h3>
-                <button onClick={()=>{this.buttonClick()}}></button>
+                <button onClick={()=>{this.buttonClick()}}>点击我</button>
             </div>
         )
     }

@@ -10,31 +10,23 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: './demo/index.js',
-    context: path.resolve(__dirname),
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: __dirname,
         filename: 'bundle.js',
         // publicPath: 'pathOrUrlWhenProductionBuild'
     },
     module: {
-        loaders: [
+        rules: [
             {
               test: /\.js$/,
-              loader: 'babel',
+              loader: 'babel-loader',
               query: {
                 plugins: [
-                  ['transform-react-jsx', {pragma: 'Dilithium.createElement'}],
+                  ['transform-react-jsx', {pragma: 'Lin.createElement'}],
                   'transform-class-properties'
                 ]
               }
             }
           ],
-        rules: [
-        ]
     },
-    resolve: {
-    },
-    devtool: 'source-map',
-    plugins: [
-    ]
 };
