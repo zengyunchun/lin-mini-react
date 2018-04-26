@@ -1,3 +1,8 @@
+/**
+ * DOM原生元素的基类， 真正创建， 增加， 删除元素的地方
+ * 无论多么复杂的组件最后递归底都是这个类对象
+ */
+
 const MultiChild = require('./MultiChild')
 const DOM = require('./DOM')
 const assert = require('./assert')
@@ -16,6 +21,7 @@ class DOMComponent extends MultiChild {
     this._domNode = node
     // 首次更新属性
     this._updateNodeProperties({}, this._currentElement.props)
+    // 遍历创建children组件实例
     this._createInitialDOMChildren(this._currentElement.props)
 
     return node
@@ -67,16 +73,12 @@ class DOMComponent extends MultiChild {
   }
 
   _createInitialDOMChildren(props) {
-    // this is where we go into the children of the dom component and 
-    // recursively mount and append each of the childNode to the parent node
-    if (
-      typeof props.children === 'string' ||
-      typeof props.children === 'number'
-    ) {
+    // 如果是原生控件'div'类似的就创建dom节点
+    if (typeof props.children === 'string' || typeof props.children === 'number') {
       const textNode = document.createTextNode(props.children)
       this._domNode.appendChild(textNode)
-    } else if (props.children) {
-      // Single element or Array
+    } else if (props.children) { // 否则递归遍历子组件， 创建实例增加到父节点上
+      // element => component => node的过程
       const childrenNodes = this.mountChildren(props.children)
       DOM.appendChildren(this._domNode, childrenNodes)
     }

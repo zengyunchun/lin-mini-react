@@ -1,6 +1,6 @@
 
 /**
- * 元素对象 => 组件
+ * 元素对象 => 组件对象 的方法
  */
 const DOMComponent = require('./DOMComponent')
 
