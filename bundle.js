@@ -1,1 +1,902 @@
-!function(e){var t={};function n(o){if(t[o])return t[o].exports;var r=t[o]={i:o,l:!1,exports:{}};return e[o].call(r.exports,r,r.exports,n),r.l=!0,r.exports}n.m=e,n.c=t,n.d=function(e,t,o){n.o(e,t)||Object.defineProperty(e,t,{configurable:!1,enumerable:!0,get:o})},n.r=function(e){Object.defineProperty(e,"__esModule",{value:!0})},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=14)}([function(e,t){e.exports={mountComponent:function(e){return e.mountComponent()},unmountComponent:function(e){e.unmountComponent()},receiveComponent:function(e,t){e._currentElement!==t&&e.updateComponent(e._currentElement,t)}}},function(e,t,n){const o=n(10);e.exports=function(e){let t;return"function"==typeof e.type?(t=new e.type(e.props))._construct(e):"string"==typeof e.type?t=new o(e):"string"!=typeof e&&"number"!=typeof e||(t=new o({type:"span",props:{children:e}})),t}},function(e,t){function n(e){[].slice.call(e,e.childNodes).forEach(e.removeChild,e)}e.exports={empty:n,setProperty:function(e,t,n){"children"!==t&&e.setAttribute(t,n)},removeProperty:function(e,t){e.removeAttribute(t)},appendChildren:function(e,t){Array.isArray(t)?t.forEach(t=>e.appendChild(t)):e.appendChild(t)},removeChild:function(e,t){e.removeChild(t)},insertAfter:function(e,t,n){e.insertBefore(t,n?n.nextSibling:e.firstChild)},updateStyles:function(e,t){Object.keys(t).forEach(n=>{e.style[n]=t[n]})},replaceNode:function(e,t){const o=e.parentNode;n(o),o.appendChild(t)}}},function(e,t){const n=".",o=":";function r(e,t){return t.toString(36)}e.exports=function(e,t,i){return function e(t,i,s,u){if("string"==typeof t||"number"==typeof t||!Array.isArray(t))return s(u,t,i+n+r(0,0)),1;let c=0;const d=i?i+o:n;return t.forEach((t,n)=>{c+=e(t,d+r(0,n),s,u)}),c}(e,"",t,i)}},function(e,t){e.exports=function(e,t){return e.type===t.type}},function(e,t){e.exports=function(e){if(!Boolean(e))throw new Error("assertion failure")}},function(e,t,n){const o=n(1),r=n(0),i=n(2);e.exports={render:function(e,t){!function(e,t){let n=o(e),s=r.mountComponent(n);i.empty(t),i.appendChildren(t,s)}(e,t)}}},function(e,t){const n={INSERT:1,MOVE:2,REMOVE:3},o={insert:(e,t)=>({type:n.INSERT,content:e,afterNode:t}),move:(e,t)=>({type:n.MOVE,fromIndex:e._mountIndex,afterNode:t}),remove:e=>({type:n.REMOVE,fromNode:e})};e.exports={UPDATE_TYPES:n,OPERATIONS:o}},function(e,t,n){const o=n(3),r=n(4),i=n(0);function s(e,t,o){const r=n(1);e[o]||(e[o]=r(t))}e.exports={instantiateChildren:function(e){let t={};return o(e,s,t),t},unmountChildren:function(e){e&&Object.keys(e).forEach(t=>{i.unmountComponent(e[t])})},updateChildren:function(e,t,o,s){const u=n(1);Object.keys(t).forEach(n=>{const c=e[n],d=c&&c._currentElement,p=t[n];if(d&&r(d,p))i.receiveComponent(c,p),t[n]=c;else{c&&(s[n]=c._domNode,i.unmountComponent(c));const e=u(p);t[n]=e,o.push(i.mountComponent(e))}}),Object.keys(e).forEach(n=>{if(!t.hasOwnProperty(n)){const t=e[n];s[n]=t,i.unmountComponent(t)}})}}},function(e,t,n){const o=n(8),r=n(0),{UPDATE_TYPES:i,OPERATIONS:s}=n(7),u=n(3),c=n(2);e.exports=class{constructor(){this._renderedChildren=null}mountChildren(e){const t=o.instantiateChildren(e);return this._renderedChildren=t,Object.keys(t).map((e,n)=>{const o=t[e];return o._mountIndex=n,r.mountComponent(o)})}unmountChildren(){o.unmountChildren(this._renderedChildren)}updateChildren(e){let t=this._renderedChildren,n=function(e){const t={};return u(e,(e,t,n)=>e[n]=t,t),t}(e),r=[],d={};o.updateChildren(t,n,r,d);let p=[],l=0,m=0,h=null;Object.keys(n).forEach((e,o)=>{let i=t[e],u=n[e];i===u?(i._mountIndex<l&&p.push(s.move(u,h)),l=Math.max(i._mountIndex,l),i._mountIndex=o):(i&&(l=Math.max(i._mountIndex,l)),u._mountIndex=o,p.push(s.insert(r[m],h)),m++),h=u._domNode}),Object.keys(d).forEach(e=>{p.push(s.remove(d[e]))}),function(e,t){t.forEach(t=>{switch(t.type){case i.INSERT:case i.MOVE:c.insertAfter(e,t.content,t.afterNode);break;case i.REMOVE:c.removeChild(e,t.fromNode);break;default:assert(!1)}})}(this._domNode,p),this._renderedChildren=n}}},function(e,t,n){const o=n(9),r=n(2),i=n(5);e.exports=class extends o{constructor(e){super(),this._currentElement=e,this._domNode=null}mountComponent(){const e=document.createElement(this._currentElement.type);return this._domNode=e,this._updateNodeProperties({},this._currentElement.props),this._createInitialDOMChildren(this._currentElement.props),e}unmountComponent(){this.unmountChildren()}updateComponent(e,t){this._currentElement=t,this._updateNodeProperties(e.props,t.props),this._updateDOMChildren(e.props,t.props)}_updateNodeProperties(e,t){let n={};Object.keys(e).forEach(t=>{"style"===t?Object.keys(e.style).forEach(e=>{n[e]=""}):r.removeProperty(this._domNode,t)}),Object.keys(t).forEach(o=>{e[o]!==t[o]&&("style"===o?Object.keys(t.style).forEach(e=>{n[e]=t.style[e]}):r.setProperty(this._domNode,o,t[o]))}),r.updateStyles(this._domNode,n)}_createInitialDOMChildren(e){if("string"==typeof e.children||"number"==typeof e.children){const t=document.createTextNode(e.children);this._domNode.appendChild(t)}else if(e.children){const t=this.mountChildren(e.children);r.appendChildren(this._domNode,t)}}_updateDOMChildren(e,t){const n=typeof e.children,o=typeof t.children;i(n===o),"undefined"!==o&&("string"===o||"number"===o?this._domNode.textContent=t.children:this.updateChildren(t.children))}}},function(e,t,n){const o=n(5),r=n(4),i=n(1),s=n(0);e.exports=class{constructor(e){this.props=e,this._renderedComponent=null,this._renderedNode=null,this._currentElement=null,this._pendingState=null,o(this.render)}setState(e){this._pendingState=Object.assign({},this.state,e),this.performUpdateIfNecessary()}_construct(e){this._currentElement=e}mountComponent(){let e=this.render(),t=i(e);this._renderedComponent=t;let n=s.mountComponent(t);return this._renderedNode=n,n}unmountComponent(){this._renderedComponent&&s.unmountComponent(this._renderedComponent)}updateComponent(e,t){this._currentElement=t,this.props=t.props,this.state=this._pendingState,this._pendingState=null;let n=this._renderedComponent._currentElement,o=this.render();if(r(n,o))s.receiveComponent(this._renderedComponent,o);else{s.unmountComponent(this._renderedComponent);const e=i(t);this._renderedNode=s.mountComponent(e),DOM.replaceNode(this._renderedComponent._domNode,this._renderedNode)}}performUpdateIfNecessary(){this.updateComponent(this._currentElement,this._currentElement)}}},function(e,t){e.exports={createElement:function(e,t,n){const o=Object.assign({},t),r=[].slice.call(arguments).length-2;return r>1?o.children=[].slice.call(arguments,2):1===r&&(o.children=n),{type:e,props:o}}}},function(e,t,n){const o=n(12),r=n(11),i=n(6);e.exports={createElement:o.createElement,Component:r,render:i.render}},function(e,t,n){const o=n(13);class r extends o.Component{constructor(){super(),this.state={num:0}}buttonClick(){this.setState({num:this.state.num+1})}render(){return o.createElement("div",null,o.createElement("h3",null,"点击了: ",this.state.num," 次"),o.createElement("button",{onClick:()=>{this.buttonClick()}},"点击我"))}}o.render(o.createElement(class extends o.Component{render(){return o.createElement("div",null,o.createElement("h2",null,"Lin Mini React Demo"),o.createElement(r,null))}},null),document.getElementById("root"))}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports) {
+
+/** 
+ * component => node
+*/
+
+function mountComponent(component) {
+  return component.mountComponent();
+}
+
+function unmountComponent(component) {
+  component.unmountComponent();
+}
+
+function receiveComponent(component, nextElement) {
+  const prevElement = component._currentElement;
+  if (prevElement === nextElement) return;
+
+  component.updateComponent(component._currentElement, nextElement);
+}
+
+module.exports = {
+  mountComponent,
+  unmountComponent,
+  receiveComponent
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * 元素对象 => 组件对象 的方法
+ */
+const DOMComponent = __webpack_require__(10);
+
+function instantiateComponent(element) {
+  let componentInstance;
+
+  if (typeof element.type === 'function') {
+    // 实例化组件
+    // 这里element.type实际上就是new了一个class,
+    // type相当于调用构造函数constructor
+    componentInstance = new element.type(element.props);
+    componentInstance._construct(element);
+  } else if (typeof element.type === 'string') {
+    // div, h1 等DOM元素
+    componentInstance = new DOMComponent(element);
+  } else if (typeof element === 'string' || typeof element === 'number') {
+    // 单纯的文字包裹在span里面
+    componentInstance = new DOMComponent({
+      type: 'span',
+      props: { children: element }
+    });
+  }
+
+  return componentInstance;
+}
+
+module.exports = instantiateComponent;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+/**
+ * 操作DOM的方法集合
+ */
+
+function empty(node) {
+  [].slice.call(node, node.childNodes).forEach(node.removeChild, node);
+}
+
+function updateStyles(node, styleObj) {
+  Object.keys(styleObj).forEach(styleName => {
+    node.style[styleName] = styleObj[styleName];
+  });
+}
+
+function setProperty(node, attr, value) {
+  if (attr === 'children') return;
+  node.setAttribute(attr, value);
+}
+
+function removeProperty(node, attr) {
+  node.removeAttribute(attr);
+}
+
+function appendChildren(node, children) {
+  if (Array.isArray(children)) {
+    children.forEach(child => node.appendChild(child));
+  } else {
+    node.appendChild(children);
+  }
+}
+
+function removeChild(node, child) {
+  node.removeChild(child);
+}
+
+function insertAfter(node, child, afterChild) {
+  node.insertBefore(child, afterChild ? afterChild.nextSibling : node.firstChild);
+}
+
+function replaceNode(prevNode, newNode) {
+  const parentNode = prevNode.parentNode;
+  empty(parentNode);
+  parentNode.appendChild(newNode);
+}
+
+module.exports = {
+  empty,
+  setProperty,
+  removeProperty,
+  appendChildren,
+  removeChild,
+  insertAfter,
+  updateStyles,
+  replaceNode
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+const SEPARATOR = '.';
+const SUBSEPARATOR = ':';
+
+function getComponentKey(component, index) {
+    // 这里应该用属性中的key来生成唯一id用来识别元素的唯一性，
+    // 只是简单的用index来当作key
+    return index.toString(36);
+}
+
+function traverseAllChildren(children, callback, traverseContext) {
+    return traverseAllChildrenImpl(children, '', callback, traverseContext);
+}
+
+function traverseAllChildrenImpl(children, nameSoFar, callback, traverseContext) {
+    // 如果是原生元素如'div', 就实例元素并加入子节点的上下文，callback就是instantiateChild
+    if (typeof children === 'string' || typeof children === 'number' || !Array.isArray(children)) {
+        callback(traverseContext, children, nameSoFar + SEPARATOR + getComponentKey(children, 0));
+        return 1;
+    }
+    // 否则继续递归遍历， 实例化所有节点
+    let subtreeCount = 0;
+    const namePrefix = !nameSoFar ? SEPARATOR : nameSoFar + SUBSEPARATOR;
+    children.forEach((child, i) => {
+        subtreeCount += traverseAllChildrenImpl(child, namePrefix + getComponentKey(child, i), callback, traverseContext);
+    });
+
+    return subtreeCount;
+}
+
+module.exports = traverseAllChildren;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+/**
+ *  是否应该更新判断
+ */
+
+function shouldUpdateComponent(prevElement, nextElement) {
+  // if it's still the same type, we update the component
+  // instead of unmount and mount from scratch
+  return prevElement.type === nextElement.type;
+}
+
+module.exports = shouldUpdateComponent;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/**
+ * 
+ * 断言错误
+ */
+
+function assert(val) {
+  if (!Boolean(val)) {
+    throw new Error('assertion failure');
+  }
+}
+
+module.exports = assert;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * 向外暴露mount方法接口
+ */
+
+const instantiateComponent = __webpack_require__(1);
+const Reconciler = __webpack_require__(0);
+const DOM = __webpack_require__(2);
+
+/**
+ * 
+ * @param {Object} element  与DOM对应的js组件对象
+ * @param {Node} node  DOM元素
+ */
+function render(element, node) {
+  // todo: add update
+  mount(element, node);
+}
+
+/**
+ * 
+ * @param {Object} element 与DOM对应的js组件对象
+ * @param {*} node DOM元素
+ */
+function mount(element, node) {
+  let component = instantiateComponent(element);
+  let renderedNode = Reconciler.mountComponent(component);
+
+  DOM.empty(node);
+  DOM.appendChildren(node, renderedNode);
+}
+
+module.exports = {
+  render
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+/**
+ * 更新DOM的类型
+ */
+
+const UPDATE_TYPES = {
+  INSERT: 1,
+  MOVE: 2,
+  REMOVE: 3
+};
+
+const OPERATIONS = {
+  insert(node, afterNode) {
+    return {
+      type: UPDATE_TYPES.INSERT,
+      content: node,
+      afterNode: afterNode
+    };
+  },
+
+  move(component, afterNode) {
+    return {
+      type: UPDATE_TYPES.MOVE,
+      fromIndex: component._mountIndex,
+      afterNode: afterNode
+    };
+  },
+
+  remove(node) {
+    return {
+      type: UPDATE_TYPES.REMOVE,
+      fromNode: node
+    };
+  }
+};
+
+module.exports = {
+  UPDATE_TYPES,
+  OPERATIONS
+};
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * 子元素操作的解释器， 也就是多态的实现
+ */
+
+const traverseAllChildren = __webpack_require__(3);
+const shouldUpdateComponent = __webpack_require__(4);
+const Reconciler = __webpack_require__(0);
+
+/**
+ * 
+ * @param {Array} childInstances 子节点实例上下文数组
+ * @param {object} child 单个子元素对象
+ * @param {String} name 子元素名字 
+ */
+function instantiateChild(childInstances, child, name) {
+    // don't know wtf happened here, cannot resolve it at top level
+    // hack it in
+    const instantiateComponent = __webpack_require__(1);
+
+    if (!childInstances[name]) {
+        childInstances[name] = instantiateComponent(child);
+    }
+}
+
+/**
+ * 
+ * @param {Object} children 子元素对象
+ */
+function instantiateChildren(children) {
+    //子节点的实例上下文
+    let childInstances = {};
+    // 递归遍历子元素，并且实例化增加到上下文中
+    traverseAllChildren(children, instantiateChild, childInstances);
+
+    return childInstances;
+}
+
+function unmountChildren(renderedChildren) {
+    if (!renderedChildren) return;
+
+    Object.keys(renderedChildren).forEach(childKey => {
+        Reconciler.unmountComponent(renderedChildren[childKey]);
+    });
+}
+
+function updateChildren(prevChildren, // instance tree
+nextChildren, // element tree
+mountNodes, removedNodes) {
+    // hack in the import function
+    const instantiateComponent = __webpack_require__(1);
+
+    // we use the index of the tree to track the updates of the component, like `0.0`
+    Object.keys(nextChildren).forEach(childKey => {
+        const prevChildComponent = prevChildren[childKey];
+        const prevElement = prevChildComponent && prevChildComponent._currentElement;
+        const nextElement = nextChildren[childKey];
+
+        // three scenarios:
+        // 1: the prev element exists and is of the same type as the next element
+        // 2: the prev element exists but not of the same type
+        // 3: the prev element doesn't exist
+
+        if (prevElement && shouldUpdateComponent(prevElement, nextElement)) {
+            // this will do the recursive update of the sub tree
+            // and this line is basically the actual update
+            Reconciler.receiveComponent(prevChildComponent, nextElement);
+            // and we do not need the new element
+            // note that we are converting the `nextChildren` object from an
+            // element tree to a component instance tree during all this process
+            nextChildren[childKey] = prevChildComponent;
+        } else {
+            // otherwise, we need to do the unmount and re-mount stuff
+            if (prevChildComponent) {
+                // only supports DOM node for now, should add composite component
+                removedNodes[childKey] = prevChildComponent._domNode;
+                Reconciler.unmountComponent(prevChildComponent);
+            }
+
+            // instantiate the new child. (insert)
+            const nextComponent = instantiateComponent(nextElement);
+            nextChildren[childKey] = nextComponent;
+
+            mountNodes.push(Reconciler.mountComponent(nextComponent));
+        }
+    });
+
+    // last but not least, remove the old children which no longer exist
+    Object.keys(prevChildren).forEach(childKey => {
+        if (!nextChildren.hasOwnProperty(childKey)) {
+            const prevChildComponent = prevChildren[childKey];
+            removedNodes[childKey] = prevChildComponent;
+            Reconciler.unmountComponent(prevChildComponent);
+        }
+    });
+}
+
+module.exports = {
+    instantiateChildren,
+    unmountChildren,
+    updateChildren
+};
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const ChildReconciler = __webpack_require__(8);
+const Reconciler = __webpack_require__(0);
+const { UPDATE_TYPES, OPERATIONS } = __webpack_require__(7);
+const traverseAllChildren = __webpack_require__(3);
+const DOM = __webpack_require__(2);
+
+function flattenChildren(children) {
+  const flattenedChildren = {};
+  traverseAllChildren(children, (context, child, name) => context[name] = child, flattenedChildren);
+  return flattenedChildren;
+}
+
+// this is responsible for the real updates of the diffing tree
+function processQueue(parentNode, updates) {
+  updates.forEach(update => {
+    switch (update.type) {
+      case UPDATE_TYPES.INSERT:
+        DOM.insertAfter(parentNode, update.content, update.afterNode);
+        break;
+
+      case UPDATE_TYPES.MOVE:
+        // this automatically removes and inserts the new child
+        DOM.insertAfter(parentNode, update.content, update.afterNode);
+        break;
+
+      case UPDATE_TYPES.REMOVE:
+        DOM.removeChild(parentNode, update.fromNode);
+        break;
+
+      default:
+        assert(false);
+    }
+  });
+}
+
+class MultiChild {
+  constructor() {
+    this._renderedChildren = null;
+  }
+
+  mountChildren(children) {
+    // element => Components的过程
+    const childrenComponents = ChildReconciler.instantiateChildren(children);
+    this._renderedChildren = childrenComponents;
+
+    /*
+    {
+      '.0.0': {_currentElement, ...}
+      '.0.1': {_currentElement, ...}
+    }
+    */
+    // 遍历数组components调用自身的mount来实例化组件并返回节点
+    // component => node节点实例化的过程
+    const childrenNodes = Object.keys(childrenComponents).map((childKey, i) => {
+      const childComponent = childrenComponents[childKey];
+
+      childComponent._mountIndex = i;
+
+      return Reconciler.mountComponent(childComponent);
+    });
+
+    return childrenNodes;
+  }
+
+  unmountChildren() {
+    ChildReconciler.unmountChildren(this._renderedChildren);
+  }
+
+  updateChildren(nextChildren) {
+    // component tree
+    let prevRenderedChildren = this._renderedChildren;
+    // element tree
+    let nextRenderedChildren = flattenChildren(nextChildren);
+
+    let mountNodes = [];
+    let removedNodes = {};
+
+    ChildReconciler.updateChildren(prevRenderedChildren, nextRenderedChildren, mountNodes, removedNodes);
+    // We'll compare the current set of children to the next set.
+    // We need to determine what nodes are being moved around, which are being
+    // inserted, and which are getting removed. Luckily, the removal list was
+    // already determined by the ChildReconciler.
+
+    // We'll generate a series of update operations here based on the 
+    // bookmarks that we've made just now
+    let updates = [];
+
+    let lastIndex = 0;
+    let nextMountIndex = 0;
+    let lastPlacedNode = null;
+
+    Object.keys(nextRenderedChildren).forEach((childKey, nextIndex) => {
+      let prevChild = prevRenderedChildren[childKey];
+      let nextChild = nextRenderedChildren[childKey];
+
+      // mark this as an update if they are identical
+      if (prevChild === nextChild) {
+        // We don't actually need to move if moving to a lower index. 
+        // Other operations will ensure the end result is correct.
+        if (prevChild._mountIndex < lastIndex) {
+          updates.push(OPERATIONS.move(nextChild, lastPlacedNode));
+        }
+
+        lastIndex = Math.max(prevChild._mountIndex, lastIndex);
+        prevChild._mountIndex = nextIndex;
+      } else {
+        // Otherwise we need to record an insertion.
+        // First, if we have a prevChild then we know it's a removal.
+        // We want to update lastIndex based on that.
+        if (prevChild) {
+          lastIndex = Math.max(prevChild._mountIndex, lastIndex);
+        }
+
+        nextChild._mountIndex = nextIndex;
+        updates.push(OPERATIONS.insert(mountNodes[nextMountIndex], lastPlacedNode));
+        nextMountIndex++;
+      }
+
+      // keep track of lastPlacedNode
+      lastPlacedNode = nextChild._domNode;
+    });
+
+    // enque the removal the non-exsiting nodes
+    Object.keys(removedNodes).forEach(childKey => {
+      updates.push(OPERATIONS.remove(removedNodes[childKey]));
+    });
+
+    // do the actual updates
+    processQueue(this._domNode, updates);
+
+    // at this point, nextRenderedChildren has already become a component tree
+    // rather than the original element tree
+    this._renderedChildren = nextRenderedChildren;
+  }
+}
+
+module.exports = MultiChild;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * DOM原生元素的基类， 真正创建， 增加， 删除元素的地方
+ * 无论多么复杂的组件最后递归底都是这个类对象
+ */
+
+const MultiChild = __webpack_require__(9);
+const DOM = __webpack_require__(2);
+const assert = __webpack_require__(5);
+
+class DOMComponent extends MultiChild {
+  constructor(element) {
+    super();
+    this._currentElement = element;
+    this._domNode = null;
+  }
+
+  mountComponent() {
+    // 创建真实DOM节点
+    const node = document.createElement(this._currentElement.type);
+    // 缓存DOM节点到组件内部
+    this._domNode = node;
+    // 首次更新属性
+    this._updateNodeProperties({}, this._currentElement.props);
+    // 遍历创建children组件实例
+    this._createInitialDOMChildren(this._currentElement.props);
+
+    return node;
+  }
+
+  unmountComponent() {
+    this.unmountChildren();
+  }
+
+  updateComponent(prevElement, nextElement) {
+    this._currentElement = nextElement;
+    this._updateNodeProperties(prevElement.props, nextElement.props);
+    this._updateDOMChildren(prevElement.props, nextElement.props);
+  }
+
+  _updateNodeProperties(prevProps, nextProps) {
+    let styleUpdates = {};
+
+    // 遍历上一次的props, 移除DOM节点上的所有style和attribute
+    // 因为到这步时已经能确定要更新当前div, 所以全部重置
+    Object.keys(prevProps).forEach(propName => {
+      if (propName === 'style') {
+        Object.keys(prevProps['style']).forEach(styleName => {
+          styleUpdates[styleName] = '';
+        });
+      } else {
+        DOM.removeProperty(this._domNode, propName);
+      }
+    });
+
+    // update / add new attributes
+    Object.keys(nextProps).forEach(propName => {
+      let prevValue = prevProps[propName];
+      let nextValue = nextProps[propName];
+
+      if (prevValue === nextValue) return;
+
+      if (propName === 'style') {
+        // 记录变化的样式style
+        Object.keys(nextProps['style']).forEach(styleName => {
+          // overwrite the existing styles
+          styleUpdates[styleName] = nextProps.style[styleName];
+        });
+      } else {
+        // 更新真实的属性attribute
+        DOM.setProperty(this._domNode, propName, nextProps[propName]);
+      }
+    });
+    // 更新真实的样式styles
+    DOM.updateStyles(this._domNode, styleUpdates);
+  }
+
+  _createInitialDOMChildren(props) {
+    // 如果是原生控件'div'类似的就创建dom节点
+    if (typeof props.children === 'string' || typeof props.children === 'number') {
+      const textNode = document.createTextNode(props.children);
+      this._domNode.appendChild(textNode);
+    } else if (props.children) {
+      // 否则递归遍历子组件， 创建实例增加到父节点上
+      // element => component => node的过程
+      const childrenNodes = this.mountChildren(props.children);
+      DOM.appendChildren(this._domNode, childrenNodes);
+    }
+  }
+
+  _updateDOMChildren(prevProps, nextProps) {
+    const prevType = typeof prevProps.children;
+    const nextType = typeof nextProps.children;
+    assert(prevType === nextType);
+
+    // Childless node, skip
+    if (nextType === 'undefined') return;
+
+    // Much like the initial step in mounting, handle text differently than elements.
+    if (nextType === 'string' || nextType === 'number') {
+      this._domNode.textContent = nextProps.children;
+    } else {
+      this.updateChildren(nextProps.children);
+    }
+  }
+}
+
+module.exports = DOMComponent;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * 组件基类, 提供组件的装配，卸载， 更新等基本方法
+ */
+
+const assert = __webpack_require__(5);
+const shouldUpdateComponent = __webpack_require__(4);
+const instantiateComponent = __webpack_require__(1);
+const Reconciler = __webpack_require__(0);
+
+class Component {
+  constructor(props) {
+    this.props = props;
+    this._renderedComponent = null;
+    this._renderedNode = null;
+    this._currentElement = null;
+    this._pendingState = null;
+    assert(this.render);
+  }
+
+  setState(partialState) {
+    this._pendingState = Object.assign({}, this.state, partialState);
+    this.performUpdateIfNecessary();
+  }
+
+  _construct(element) {
+    this._currentElement = element;
+  }
+
+  mountComponent() {
+    // we simply assume the render method returns a single element
+    let renderedElement = this.render();
+
+    let renderedComponent = instantiateComponent(renderedElement);
+    this._renderedComponent = renderedComponent;
+
+    let renderedNode = Reconciler.mountComponent(renderedComponent);
+    this._renderedNode = renderedNode;
+
+    return renderedNode;
+  }
+
+  unmountComponent() {
+    if (!this._renderedComponent) return;
+
+    // call componentWillUnmount()
+
+    // delegate the unmounting process to the rendered component
+    Reconciler.unmountComponent(this._renderedComponent);
+  }
+
+  updateComponent(prevElement, nextElement) {
+    if (prevElement !== nextElement) {}
+    // should get re-render because of the changes of props passed down from parents
+    // react calls componentWillReceiveProps here
+
+
+    // re-bookmarking
+    this._currentElement = nextElement;
+
+    this.props = nextElement.props;
+    this.state = this._pendingState;
+    this._pendingState = null;
+
+    let prevRenderedElement = this._renderedComponent._currentElement;
+    let nextRenderedElement = this.render();
+
+    if (shouldUpdateComponent(prevRenderedElement, nextRenderedElement)) {
+      Reconciler.receiveComponent(this._renderedComponent, nextRenderedElement);
+    } else {
+      // re-mount everything from this point
+      Reconciler.unmountComponent(this._renderedComponent);
+
+      const nextRenderedComponent = instantiateComponent(nextElement);
+      this._renderedNode = Reconciler.mountComponent(nextRenderedComponent);
+      DOM.replaceNode(this._renderedComponent._domNode, this._renderedNode);
+    }
+  }
+
+  performUpdateIfNecessary() {
+    // react uses a batch here, we are just gonna call it directly without delay
+    this.updateComponent(this._currentElement, this._currentElement);
+  }
+}
+
+module.exports = Component;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+function createElement(type, config, children) {
+  const props = Object.assign({}, config);
+  const childrenLength = [].slice.call(arguments).length - 2;
+
+  if (childrenLength > 1) {
+    props.children = [].slice.call(arguments, 2);
+  } else if (childrenLength === 1) {
+    props.children = children;
+  }
+
+  return {
+    type,
+    props
+  };
+}
+
+module.exports = {
+  createElement
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * 组件接口
+ */
+
+const Element = __webpack_require__(12);
+const Component = __webpack_require__(11);
+const Mount = __webpack_require__(6);
+
+module.exports = {
+  createElement: Element.createElement,
+  Component,
+  render: Mount.render
+};
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Lin = __webpack_require__(13);
+
+class MyApp extends Lin.Component {
+    render() {
+        return Lin.createElement(
+            'div',
+            null,
+            Lin.createElement(
+                'h2',
+                null,
+                'Lin Mini React Demo'
+            ),
+            Lin.createElement(Info, null)
+        );
+    }
+}
+
+class Info extends Lin.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            num: 0
+        };
+        setInterval(() => {
+            this.setState({
+                num: this.state.num + 1
+            });
+        }, 1000);
+        // this.buttonClick = this.buttonClick.bind(this);
+    }
+
+    // buttonClick() {
+    //     this.setState({
+    //         num: this.state.num + 1
+    //     })
+    // }
+
+
+    render() {
+        return Lin.createElement(
+            'div',
+            null,
+            Lin.createElement(
+                'h3',
+                { style: {
+                        fontSize: '20px',
+                        color: 'red'
+                    } },
+                '\u6BCF\u9694\u4E00\u79D2\u66F4\u65B0\u4E00\u6B21: ',
+                this.state.num,
+                ' '
+            )
+        );
+    }
+}
+
+Lin.render(Lin.createElement(MyApp, null), document.getElementById("root"));
+
+/***/ })
+/******/ ]);
